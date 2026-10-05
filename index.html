@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADMV — Мужская одежда</title>
+<style>
+    /* ===== Палитра: чёрный / белый / синий ===== */
+    :root{
+        --black:#0a0b0f;
+        --black2:#111319;
+        --white:#ffffff;
+        --muted:#a7adbb;
+        --blue:#1e5bff;
+        --blue-dark:#0a2a8a;
+        --blue-light:#5c8bff;
+        --line:rgba(255,255,255,0.1);
+    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+        background:var(--black); color:var(--white); min-height:100vh;
+        -webkit-font-smoothing:antialiased;
+    }
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+
+    /* ===== Шапка ===== */
+    header{
+        position:sticky; top:0; z-index:100;
+        background:rgba(10,11,15,0.72); backdrop-filter:blur(14px);
+        border-bottom:1px solid var(--line);
+    }
+    .nav{ display:flex; align-items:center; height:64px; gap:30px; }
+    .logo{ font-weight:900; font-size:1.5rem; letter-spacing:2px; }
+    .logo b{ color:var(--blue-light); }
+    .nav .links{ display:flex; gap:26px; margin-left:auto; font-size:.92rem; }
+    .nav .links a{ color:var(--muted); transition:color .2s; }
+    .nav .links a:hover{ color:var(--white); }
+    .nav .cta{ background:var(--blue); color:#fff; padding:9px 20px; border-radius:40px; font-weight:600; font-size:.9rem; transition:background .2s; }
+    .nav .cta:hover{ background:#3a74ff; }
+    .burger{ display:none; margin-left:auto; font-size:1.5rem; cursor:pointer; }
+
+    /* ===== Герой ===== */
+    .hero{
+        position:relative; overflow:hidden;
+        min-height:88vh; display:flex; align-items:center;
+        background:
+          radial-gradient(60% 80% at 75% 20%, rgba(30,91,255,0.25), transparent 60%),
+          radial-gradient(50% 60% at 10% 90%, rgba(10,42,138,0.35), transparent 60%),
+          var(--black);
+    }
+    .hero::after{ /* тонкая диагональная синяя линия-акцент */
+        content:""; position:absolute; right:-10%; top:0; width:55%; height:100%;
+        background:linear-gradient(120deg, transparent 48%, rgba(30,91,255,0.08) 50%, transparent 52%);
+        pointer-events:none;
+    }
+    .hero-inner{ position:relative; z-index:2; }
+    .eyebrow{ display:inline-block; color:var(--blue-light); font-weight:700; letter-spacing:4px; font-size:.8rem; margin-bottom:18px; text-transform:uppercase; }
+    .hero h1{ font-size:clamp(3.4rem, 12vw, 8.5rem); font-weight:900; line-height:.92; letter-spacing:-2px; }
+    .hero h1 .ac{ color:transparent; -webkit-text-stroke:2px var(--blue-light); }
+    .hero p.lead{ color:var(--muted); font-size:clamp(1rem,2.5vw,1.35rem); max-width:520px; margin:22px 0 34px; line-height:1.5; }
+    .btn{ display:inline-block; padding:14px 30px; border-radius:40px; font-weight:600; transition:all .2s; cursor:pointer; border:none; font-size:1rem; }
+    .btn-blue{ background:var(--blue); color:#fff; }
+    .btn-blue:hover{ background:#3a74ff; transform:translateY(-2px); }
+    .btn-ghost{ border:1.5px solid rgba(255,255,255,0.3); color:#fff; margin-left:12px; }
+    .btn-ghost:hover{ border-color:#fff; background:rgba(255,255,255,0.06); }
+
+    /* ===== Заголовки секций ===== */
+    section{ padding:84px 0; }
+    .sec-head{ margin-bottom:40px; }
+    .sec-head .tag{ color:var(--blue-light); font-weight:700; letter-spacing:3px; font-size:.78rem; text-transform:uppercase; }
+    .sec-head h2{ font-size:clamp(2rem,6vw,3rem); font-weight:800; letter-spacing:-1px; margin-top:8px; }
+
+    /* ===== Категории ===== */
+    .grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+    .cat{
+        position:relative; border-radius:18px; padding:30px 24px; min-height:210px;
+        background:linear-gradient(160deg,#141722,#0d0f16);
+        border:1px solid var(--line); overflow:hidden;
+        display:flex; flex-direction:column; justify-content:space-between;
+        transition:transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .cat:hover{ transform:translateY(-6px); border-color:rgba(30,91,255,0.6); box-shadow:0 20px 40px rgba(0,0,0,0.5); }
+    .cat .ico{ font-size:2.6rem; }
+    .cat .nm{ font-size:1.25rem; font-weight:700; }
+    .cat .go{ color:var(--blue-light); font-size:.88rem; font-weight:600; }
+    .cat::before{ content:""; position:absolute; right:-40px; top:-40px; width:120px; height:120px; border-radius:50%; background:radial-gradient(rgba(30,91,255,0.25),transparent 70%); }
+
+    /* ===== Новинки ===== */
+    .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .prod{
+        border-radius:18px; overflow:hidden; background:linear-gradient(160deg,#141722,#0d0f16);
+        border:1px solid var(--line); transition:transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .prod:hover{ transform:translateY(-6px); border-color:rgba(30,91,255,0.6); box-shadow:0 20px 40px rgba(0,0,0,0.5); }
+    .prod .ph{ height:260px; display:flex; align-items:center; justify-content:center; font-size:4rem;
+        background:linear-gradient(135deg, rgba(30,91,255,0.18), rgba(10,42,138,0.08)); }
+    .prod .body{ padding:18px 20px; }
+    .prod .body .t{ font-weight:700; font-size:1.05rem; }
+    .prod .body .d{ color:var(--muted); font-size:.85rem; margin:4px 0 12px; }
+    .prod .body .pr{ font-weight:800; font-size:1.1rem; }
+    .prod .body .pr span{ color:var(--blue-light); }
+
+    /* ===== О бренде ===== */
+    .about{ background:var(--black2); }
+    .about .box{ display:grid; grid-template-columns:1.1fr 1fr; gap:50px; align-items:center; }
+    .about h2{ font-size:clamp(2rem,6vw,3rem); font-weight:800; letter-spacing:-1px; line-height:1.05; }
+    .about h2 .bl{ color:var(--blue-light); }
+    .about p{ color:var(--muted); line-height:1.7; margin-top:18px; }
+    .stats{ display:flex; gap:40px; margin-top:28px; }
+    .stats .n{ font-size:2.2rem; font-weight:900; color:#fff; }
+    .stats .l{ color:var(--muted); font-size:.85rem; }
+    .about .visual{ border-radius:20px; min-height:320px; border:1px solid var(--line);
+        background:radial-gradient(70% 70% at 70% 30%, rgba(30,91,255,0.35), transparent 60%), linear-gradient(160deg,#141722,#0a0b0f);
+        display:flex; align-items:center; justify-content:center; font-size:6rem; font-weight:900; letter-spacing:3px; }
+    .about .visual b{ color:var(--blue-light); }
+
+    /* ===== Контакты / CTA ===== */
+    .contact{ text-align:center; }
+    .contact h2{ font-size:clamp(2rem,6vw,3.2rem); font-weight:800; }
+    .contact p{ color:var(--muted); margin:16px auto 30px; max-width:480px; }
+
+    /* ===== Футер ===== */
+    footer{ border-top:1px solid var(--line); padding:36px 0; color:var(--muted); font-size:.88rem; }
+    .foot{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    footer a:hover{ color:#fff; }
+
+    /* ===== Адаптив ===== */
+    @media(max-width:900px){
+        .grid4{ grid-template-columns:repeat(2,1fr); }
+        .grid3{ grid-template-columns:1fr; }
+        .about .box{ grid-template-columns:1fr; }
+        .nav .links{ display:none; }
+        .burger{ display:block; }
+    }
+    @media(max-width:560px){
+        .grid4{ grid-template-columns:1fr; }
+        .btn-ghost{ margin-left:0; margin-top:12px; }
+    }
+
+    /* ===== ЗАСТАВКА (сборка ADMV в 3D) ===== */
+    #intro{
+        position:fixed; inset:0; z-index:9999; overflow:hidden;
+        background:radial-gradient(circle at 50% 42%, #0e1326, #000 70%);
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        perspective:1100px; transition:opacity 1s ease, transform 1s ease, filter 1s ease;
+    }
+    #intro.hide{ opacity:0; transform:scale(1.15); filter:blur(14px); pointer-events:none; }
+    #intro .glow{ position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; }
+    #intro .glow.a{ width:480px; height:480px; background:rgba(30,91,255,0.55); top:14%; left:16%; animation:fa 9s ease-in-out infinite; }
+    #intro .glow.b{ width:540px; height:540px; background:rgba(10,42,138,0.6); bottom:8%; right:12%; animation:fb 11s ease-in-out infinite; }
+    @keyframes fa{ 50%{ transform:translate(60px,40px) scale(1.15);} }
+    @keyframes fb{ 50%{ transform:translate(-50px,-30px) scale(1.1);} }
+    .admv{ display:flex; gap:clamp(6px,2vw,22px); transform-style:preserve-3d; }
+    .admv .ch{
+        font-size:clamp(3.5rem,20vw,11rem); font-weight:900; letter-spacing:-2px; line-height:1;
+        color:#fff; opacity:0;
+        transform:translate3d(var(--x),var(--y),var(--z)) rotateX(var(--rx)) rotateY(var(--ry)) scale(.4);
+        filter:blur(14px);
+        transition:transform 1.2s cubic-bezier(.19,1,.22,1), opacity .9s ease, filter 1s ease;
+        text-shadow:0 0 40px rgba(30,91,255,0.5);
+    }
+    .admv .ch.blue{ color:transparent; -webkit-text-stroke:3px var(--blue-light); text-shadow:0 0 50px rgba(30,91,255,0.8); }
+    .admv.go .ch{ opacity:1; transform:none; filter:blur(0); }
+    .intro-line{ width:0; height:3px; margin-top:30px; background:linear-gradient(90deg,transparent,var(--blue),transparent); transition:width 1s ease .2s; }
+    #intro.ready .intro-line{ width:min(60%,360px); }
+    .intro-tag{ margin-top:18px; letter-spacing:8px; font-size:clamp(.7rem,2.5vw,1rem); color:var(--muted); text-transform:uppercase;
+        opacity:0; transform:translateY(14px); transition:opacity .9s ease .3s, transform .9s ease .3s; }
+    #intro.ready .intro-tag{ opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<!-- ===== ЗАСТАВКА ===== -->
+<div id="intro">
+    <div class="glow a"></div>
+    <div class="glow b"></div>
+    <div class="admv" id="admv"></div>
+    <div class="intro-line"></div>
+    <div class="intro-tag">Мужская одежда</div>
+</div>
+
+<!-- ===== Шапка ===== -->
+<header>
+    <div class="wrap nav">
+        <div class="logo">AD<b>MV</b></div>
+        <nav class="links">
+            <a href="#home">Главная</a>
+            <a href="#catalog">Каталог</a>
+            <a href="#about">О бренде</a>
+            <a href="#contact">Контакты</a>
+        </nav>
+        <a href="#contact" class="cta">Связаться</a>
+        <div class="burger" onclick="document.querySelector('.links').style.display='flex'">☰</div>
+    </div>
+</header>
+
+<!-- ===== Герой ===== -->
+<section class="hero" id="home" style="padding-top:0">
+    <div class="wrap hero-inner">
+        <span class="eyebrow">Новая коллекция · 2026</span>
+        <h1>ADMV<br><span class="ac">STYLE</span></h1>
+        <p class="lead">Мужская одежда с характером. Чёткие линии, качество и уверенность в каждой детали.</p>
+        <div>
+            <a href="#catalog" class="btn btn-blue">Смотреть каталог</a>
+            <a href="#contact" class="btn btn-ghost">Связаться с нами</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Категории ===== -->
+<section id="catalog">
+    <div class="wrap">
+        <div class="sec-head">
+            <div class="tag">Категории</div>
+            <h2>Выбери своё</h2>
+        </div>
+        <div class="grid4">
+            <div class="cat"><div class="ico">👕</div><div><div class="nm">Футболки и поло</div></div><div class="go">Смотреть →</div></div>
+            <div class="cat"><div class="ico">🧥</div><div><div class="nm">Верхняя одежда</div></div><div class="go">Смотреть →</div></div>
+            <div class="cat"><div class="ico">👖</div><div><div class="nm">Брюки и джинсы</div></div><div class="go">Смотреть →</div></div>
+            <div class="cat"><div class="ico">🧢</div><div><div class="nm">Аксессуары</div></div><div class="go">Смотреть →</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Новинки ===== -->
+<section style="padding-top:0">
+    <div class="wrap">
+        <div class="sec-head">
+            <div class="tag">Новинки</div>
+            <h2>Свежая коллекция</h2>
+        </div>
+        <div class="grid3">
+            <div class="prod"><div class="ph">👔</div><div class="body"><div class="t">Рубашка Classic</div><div class="d">Хлопок · приталенный крой</div><div class="pr"><span>4 500 ₽</span></div></div></div>
+            <div class="prod"><div class="ph">🧥</div><div class="body"><div class="t">Бомбер ADMV</div><div class="d">Ветрозащита · унисекс</div><div class="pr"><span>8 900 ₽</span></div></div></div>
+            <div class="prod"><div class="ph">👟</div><div class="body"><div class="t">Кроссовки Urban</div><div class="d">Лёгкие · на каждый день</div><div class="pr"><span>7 200 ₽</span></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== О бренде ===== -->
+<section class="about" id="about">
+    <div class="wrap box">
+        <div>
+            <div class="tag" style="color:var(--blue-light);font-weight:700;letter-spacing:3px;font-size:.78rem;text-transform:uppercase">О бренде</div>
+            <h2>Это <span class="bl">ADMV</span>.<br>Больше чем одежда.</h2>
+            <p>ADMV — это мужской стиль без компромиссов. Мы собираем вещи, которые носятся каждый день и подчёркивают характер. Простые силуэты, качественные ткани и внимание к деталям.</p>
+            <div class="stats">
+                <div><div class="n">100+</div><div class="l">моделей</div></div>
+                <div><div class="n">24/7</div><div class="l">поддержка</div></div>
+                <div><div class="n">РФ</div><div class="l">доставка</div></div>
+            </div>
+        </div>
+        <div class="visual">AD<b>MV</b></div>
+    </div>
+</section>
+
+<!-- ===== Контакты ===== -->
+<section class="contact" id="contact">
+    <div class="wrap">
+        <div class="tag" style="color:var(--blue-light);font-weight:700;letter-spacing:3px;font-size:.78rem;text-transform:uppercase">Контакты</div>
+        <h2>Готов обновить гардероб?</h2>
+        <p>Напиши нам — подберём размер, расскажем о наличии и доставке.</p>
+        <a href="#" class="btn btn-blue">Написать в Telegram</a>
+    </div>
+</section>
+
+<!-- ===== Футер ===== -->
+<footer>
+    <div class="wrap foot">
+        <div class="logo">AD<b>MV</b></div>
+        <div>© 2026 ADMV · Мужская одежда</div>
+        <div><a href="#home">Наверх ↑</a></div>
+    </div>
+</footer>
+
+<script>
+    // ===== Заставка: сборка ADMV =====
+    (function(){
+        var intro = document.getElementById('intro');
+        var box = document.getElementById('admv');
+        var letters = "ADMV".split("");
+        var html = '';
+        letters.forEach(function(c, i){
+            var x  = ((Math.random()*2-1)*600).toFixed(0);
+            var y  = ((Math.random()*2-1)*400).toFixed(0);
+            var z  = (-(Math.random()*500+300)).toFixed(0);
+            var rx = ((Math.random()*2-1)*120).toFixed(0);
+            var ry = ((Math.random()*2-1)*120).toFixed(0);
+            var cls = (i===3) ? 'ch blue' : 'ch';   // последняя буква V — синий контур
+            html += '<span class="'+cls+'" style="--x:'+x+'px;--y:'+y+'px;--z:'+z+'px;--rx:'+rx+'deg;--ry:'+ry+'deg;transition-delay:'+(i*0.12).toFixed(2)+'s">'+c+'</span>';
+        });
+        box.innerHTML = html;
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ box.classList.add('go'); }); });
+        var assemble = (letters.length*0.12 + 1.2) * 1000;
+        setTimeout(function(){ intro.classList.add('ready'); }, assemble);
+        setTimeout(function(){
+            intro.classList.add('hide');
+            document.body.style.overflow = '';
+            setTimeout(function(){ if(intro.parentNode) intro.parentNode.removeChild(intro); }, 1050);
+        }, assemble + 1700);
+    })();
+</script>
+
+</body>
+</html>
