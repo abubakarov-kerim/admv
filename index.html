@@ -3,176 +3,332 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ADMV — Мужская одежда</title>
+<title>ADMV® · Мужская одежда</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* ===== Палитра: чёрный / белый / синий ===== */
+    /* ===== Тёмная премиум-палитра: графит / off-white / электрик-синий ===== */
     :root{
-        --black:#0a0b0f;
-        --black2:#111319;
-        --white:#ffffff;
-        --muted:#a7adbb;
-        --blue:#1e5bff;
-        --blue-dark:#0a2a8a;
-        --blue-light:#5c8bff;
-        --line:rgba(255,255,255,0.1);
+        --bg:#0a0a0d;
+        --bg2:#111117;
+        --bg3:#17171f;
+        --line:rgba(255,255,255,0.08);
+        --line2:rgba(255,255,255,0.14);
+        --text:#f3f3f6;
+        --muted:#8b8b97;
+        --blue:#3d7bff;
+        --blue-2:#2a63e8;
+        --r:16px;
+        --ease:cubic-bezier(.2,.8,.2,1);
     }
     *{ box-sizing:border-box; margin:0; padding:0; }
+    html{ scroll-behavior:smooth; }
     body{
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
-        background:var(--black); color:var(--white); min-height:100vh;
-        -webkit-font-smoothing:antialiased;
+        font-family:'Manrope',system-ui,-apple-system,sans-serif;
+        background:var(--bg); color:var(--text); min-height:100vh;
+        -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden;
     }
+    h1,h2,h3,.display{ font-family:'Space Grotesk','Manrope',sans-serif; }
     a{ color:inherit; text-decoration:none; }
-    .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+    img{ display:block; max-width:100%; }
+    .wrap{ max-width:1300px; margin:0 auto; padding:0 clamp(20px,5vw,52px); }
+    .up{ text-transform:uppercase; letter-spacing:.2em; }
+
+    /* ===== Появление при скролле ===== */
+    .reveal{ opacity:0; transform:translateY(32px); transition:opacity .85s var(--ease), transform .85s var(--ease); }
+    .reveal.in{ opacity:1; transform:none; }
+
+    /* ===== Кнопки ===== */
+    .btn{ display:inline-flex; align-items:center; gap:10px; font-family:'Manrope'; font-size:.74rem; font-weight:700;
+        letter-spacing:.14em; text-transform:uppercase; padding:16px 32px; border-radius:999px; cursor:pointer;
+        border:1px solid transparent; transition:transform .25s var(--ease), background .25s, color .25s, border-color .25s, box-shadow .25s; }
+    .btn:active{ transform:translateY(1px) scale(.99); }
+    .btn .arr{ transition:transform .3s var(--ease); }
+    .btn:hover .arr{ transform:translateX(5px); }
+    .btn-blue{ background:var(--blue); color:#fff; }
+    .btn-blue:hover{ background:var(--blue-2); transform:translateY(-2px); box-shadow:0 18px 44px -16px var(--blue); }
+    .btn-ghost{ background:transparent; border-color:var(--line2); color:var(--text); }
+    .btn-ghost:hover{ border-color:var(--blue); color:var(--blue); transform:translateY(-2px); }
 
     /* ===== Шапка ===== */
     header{
         position:sticky; top:0; z-index:100;
-        background:rgba(10,11,15,0.72); backdrop-filter:blur(14px);
+        background:rgba(10,10,13,0.7); backdrop-filter:blur(18px) saturate(140%);
         border-bottom:1px solid var(--line);
     }
-    .nav{ display:flex; align-items:center; height:64px; gap:30px; }
-    .logo{ font-weight:900; font-size:1.5rem; letter-spacing:2px; }
-    .logo b{ color:var(--blue-light); }
-    .nav .links{ display:flex; gap:26px; margin-left:auto; font-size:.92rem; }
-    .nav .links a{ color:var(--muted); transition:color .2s; }
-    .nav .links a:hover{ color:var(--white); }
-    .nav .cta{ background:var(--blue); color:#fff; padding:9px 20px; border-radius:40px; font-weight:600; font-size:.9rem; transition:background .2s; }
-    .nav .cta:hover{ background:#3a74ff; }
-    .burger{ display:none; margin-left:auto; font-size:1.5rem; cursor:pointer; }
+    .hdr{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; height:76px; }
+    .hdr .left a{ font-size:.68rem; font-weight:600; margin-right:24px; color:var(--muted); transition:color .25s; }
+    .hdr .left a:hover{ color:var(--text); }
+    .hdr .logo{ text-align:center; font-family:'Space Grotesk'; font-weight:700; font-size:1.44rem; letter-spacing:.04em; }
+    .hdr .logo .r{ font-size:.5em; vertical-align:super; color:var(--blue); }
+    .hdr .cart{ text-align:right; }
+    .hdr .cart a{ display:inline-flex; align-items:center; gap:9px; font-size:.66rem; font-weight:700; letter-spacing:.14em;
+        padding:10px 18px; border:1px solid var(--line2); border-radius:999px; transition:border-color .25s, color .25s; }
+    .hdr .cart a:hover{ border-color:var(--blue); color:var(--blue); }
+    .hdr .cart .dot{ width:6px; height:6px; background:var(--blue); border-radius:50%; }
+
+    /* ===== Бургер + мобильное меню ===== */
+    .burger{ display:none; flex-direction:column; justify-content:center; gap:5px; width:44px; height:44px;
+        background:transparent; border:1px solid var(--line2); border-radius:12px; cursor:pointer; padding:0; }
+    .burger span{ display:block; width:18px; height:2px; background:var(--text); margin:0 auto; transition:transform .3s var(--ease), opacity .2s; }
+    .burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+    .burger.open span:nth-child(2){ opacity:0; }
+    .burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+    .mobnav{ position:fixed; top:76px; left:0; right:0; bottom:0; z-index:95;
+        background:rgba(10,10,13,0.97); backdrop-filter:blur(14px);
+        display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+        opacity:0; pointer-events:none; transform:translateY(-12px); transition:opacity .35s var(--ease), transform .35s var(--ease); }
+    .mobnav.open{ opacity:1; pointer-events:auto; transform:none; }
+    .mobnav a{ font-family:'Space Grotesk'; font-weight:600; font-size:clamp(1.6rem,8vw,2.2rem); letter-spacing:-.02em;
+        padding:16px 28px; color:var(--text); }
+    .mobnav a:active{ color:var(--blue); }
 
     /* ===== Герой ===== */
-    .hero{
-        position:relative; overflow:hidden;
-        min-height:88vh; display:flex; align-items:center;
-        background:
-          radial-gradient(60% 80% at 75% 20%, rgba(30,91,255,0.25), transparent 60%),
-          radial-gradient(50% 60% at 10% 90%, rgba(10,42,138,0.35), transparent 60%),
-          var(--black);
-    }
-    .hero::after{ /* тонкая диагональная синяя линия-акцент */
-        content:""; position:absolute; right:-10%; top:0; width:55%; height:100%;
-        background:linear-gradient(120deg, transparent 48%, rgba(30,91,255,0.08) 50%, transparent 52%);
-        pointer-events:none;
-    }
-    .hero-inner{ position:relative; z-index:2; }
-    .eyebrow{ display:inline-block; color:var(--blue-light); font-weight:700; letter-spacing:4px; font-size:.8rem; margin-bottom:18px; text-transform:uppercase; }
-    .hero h1{ font-size:clamp(3.4rem, 12vw, 8.5rem); font-weight:900; line-height:.92; letter-spacing:-2px; }
-    .hero h1 .ac{ color:transparent; -webkit-text-stroke:2px var(--blue-light); }
-    .hero p.lead{ color:var(--muted); font-size:clamp(1rem,2.5vw,1.35rem); max-width:520px; margin:22px 0 34px; line-height:1.5; }
-    .btn{ display:inline-block; padding:14px 30px; border-radius:40px; font-weight:600; transition:all .2s; cursor:pointer; border:none; font-size:1rem; }
-    .btn-blue{ background:var(--blue); color:#fff; }
-    .btn-blue:hover{ background:#3a74ff; transform:translateY(-2px); }
-    .btn-ghost{ border:1.5px solid rgba(255,255,255,0.3); color:#fff; margin-left:12px; }
-    .btn-ghost:hover{ border-color:#fff; background:rgba(255,255,255,0.06); }
+    .hero{ position:relative; overflow:hidden; padding:clamp(48px,8vw,96px) 0 clamp(56px,9vw,110px); }
+    .hero::before{ content:''; position:absolute; width:720px; height:720px; border-radius:50%;
+        background:var(--blue); opacity:.12; filter:blur(180px); top:-280px; right:-160px; pointer-events:none; }
+    .hero .box{ position:relative; z-index:2; display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(32px,5vw,70px); align-items:center; }
+    .hero .eyebrow{ display:inline-flex; align-items:center; gap:11px; font-size:.68rem; font-weight:700; color:var(--blue); letter-spacing:.2em; text-transform:uppercase; }
+    .hero .eyebrow::before{ content:''; width:32px; height:1px; background:var(--blue); }
+    .hero h1{ font-size:clamp(2.7rem,7.5vw,5.6rem); font-weight:700; letter-spacing:-.035em; line-height:.98; margin:22px 0 24px; }
+    .hero h1 .bl{ color:var(--blue); }
+    .hero p{ color:var(--muted); max-width:440px; line-height:1.6; font-size:1.04rem; margin-bottom:36px; }
+    .hero .cta{ display:flex; gap:14px; flex-wrap:wrap; }
+    .hero .shot{ position:relative; aspect-ratio:4/5; border-radius:var(--r); overflow:hidden; border:1px solid var(--line);
+        box-shadow:0 40px 90px -40px rgba(0,0,0,.9); }
+    .hero .shot img{ width:100%; height:100%; object-fit:cover; }
+    .hero .shot .badge{ position:absolute; bottom:18px; left:18px; background:rgba(10,10,13,0.7); backdrop-filter:blur(8px);
+        border:1px solid var(--line2); border-radius:12px; padding:12px 16px; }
+    .hero .shot .badge .t{ font-size:.64rem; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; }
+    .hero .shot .badge .n{ font-family:'Space Grotesk'; font-weight:700; font-size:1rem; margin-top:3px; }
 
-    /* ===== Заголовки секций ===== */
-    section{ padding:84px 0; }
-    .sec-head{ margin-bottom:40px; }
-    .sec-head .tag{ color:var(--blue-light); font-weight:700; letter-spacing:3px; font-size:.78rem; text-transform:uppercase; }
-    .sec-head h2{ font-size:clamp(2rem,6vw,3rem); font-weight:800; letter-spacing:-1px; margin-top:8px; }
+    /* ===== Преимущества ===== */
+    .perks{ padding:0 0 clamp(48px,7vw,80px); }
+    .perks .row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .perk{ display:flex; align-items:center; gap:16px; background:var(--bg2); border:1px solid var(--line); border-radius:var(--r); padding:22px 24px; }
+    .perk svg{ width:26px; height:26px; stroke:var(--blue); stroke-width:1.6; fill:none; flex-shrink:0; }
+    .perk .t{ font-family:'Space Grotesk'; font-weight:600; font-size:.92rem; }
+    .perk .s{ font-size:.76rem; color:var(--muted); margin-top:3px; }
 
-    /* ===== Категории ===== */
-    .grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
-    .cat{
-        position:relative; border-radius:18px; padding:30px 24px; min-height:210px;
-        background:linear-gradient(160deg,#141722,#0d0f16);
-        border:1px solid var(--line); overflow:hidden;
-        display:flex; flex-direction:column; justify-content:space-between;
-        transition:transform .3s, border-color .3s, box-shadow .3s;
-    }
-    .cat:hover{ transform:translateY(-6px); border-color:rgba(30,91,255,0.6); box-shadow:0 20px 40px rgba(0,0,0,0.5); }
-    .cat .ico{ font-size:2.6rem; }
-    .cat .nm{ font-size:1.25rem; font-weight:700; }
-    .cat .go{ color:var(--blue-light); font-size:.88rem; font-weight:600; }
-    .cat::before{ content:""; position:absolute; right:-40px; top:-40px; width:120px; height:120px; border-radius:50%; background:radial-gradient(rgba(30,91,255,0.25),transparent 70%); }
+    /* ===== Секции ===== */
+    section{ padding:clamp(64px,10vw,120px) 0; }
+    .sec-top{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:clamp(32px,5vw,54px); gap:22px; flex-wrap:wrap; }
+    .sec-top h2{ font-size:clamp(2rem,5vw,3.4rem); font-weight:700; letter-spacing:-.03em; line-height:1; }
+    .sec-top .lead{ color:var(--muted); font-size:.95rem; margin-top:12px; max-width:52ch; line-height:1.5; }
+    .sec-top .all{ font-size:.7rem; font-weight:700; letter-spacing:.14em; color:var(--muted); display:inline-flex; gap:8px; align-items:center; transition:color .25s, gap .25s; }
+    .sec-top .all:hover{ color:var(--blue); gap:12px; }
 
-    /* ===== Новинки ===== */
-    .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-    .prod{
-        border-radius:18px; overflow:hidden; background:linear-gradient(160deg,#141722,#0d0f16);
-        border:1px solid var(--line); transition:transform .3s, border-color .3s, box-shadow .3s;
-    }
-    .prod:hover{ transform:translateY(-6px); border-color:rgba(30,91,255,0.6); box-shadow:0 20px 40px rgba(0,0,0,0.5); }
-    .prod .ph{ height:260px; display:flex; align-items:center; justify-content:center; font-size:4rem;
-        background:linear-gradient(135deg, rgba(30,91,255,0.18), rgba(10,42,138,0.08)); }
-    .prod .body{ padding:18px 20px; }
-    .prod .body .t{ font-weight:700; font-size:1.05rem; }
-    .prod .body .d{ color:var(--muted); font-size:.85rem; margin:4px 0 12px; }
-    .prod .body .pr{ font-weight:800; font-size:1.1rem; }
-    .prod .body .pr span{ color:var(--blue-light); }
+    /* ===== Сетка товаров ===== */
+    .grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(16px,2vw,24px); }
+    .card{ cursor:pointer; background:var(--bg2); border:1px solid var(--line); border-radius:var(--r); overflow:hidden;
+        transition:transform .4s var(--ease), border-color .3s, box-shadow .4s; }
+    .card:hover{ transform:translateY(-6px); border-color:var(--line2); box-shadow:0 30px 60px -34px rgba(0,0,0,.9); }
+    .card .shot{ position:relative; aspect-ratio:3/4; overflow:hidden; background:var(--bg3); }
+    .card .shot img{ width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease); }
+    .card:hover .shot img{ transform:scale(1.06); }
+    .card .shot .tag{ position:absolute; top:13px; left:13px; background:var(--blue); color:#fff; font-size:.56rem; font-weight:700;
+        letter-spacing:.14em; padding:5px 11px; border-radius:8px; }
+    .card .meta{ padding:16px 18px 18px; display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+    .card .meta .nm{ font-family:'Space Grotesk'; font-size:.9rem; font-weight:600; }
+    .card .meta .mut{ display:block; font-size:.73rem; color:var(--muted); font-weight:500; margin-top:4px; }
+    .card .meta .pr{ font-size:.9rem; font-weight:700; color:var(--blue); white-space:nowrap; }
+
+    /* ===== ПРИМЕРОЧНАЯ ===== */
+    .fit-grid{ display:grid; grid-template-columns:.86fr 1.14fr; gap:clamp(22px,4vw,52px); align-items:start; }
+    .stage-wrap{ position:sticky; top:100px; }
+    .stage{ position:relative; width:100%; aspect-ratio:3/4; background:var(--bg2); border:1px solid var(--line);
+        border-radius:calc(var(--r) + 4px); overflow:hidden;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 40px 90px -46px rgba(0,0,0,.9); }
+    .stage .spot{ position:absolute; inset:0; background:radial-gradient(60% 55% at 50% 42%, rgba(61,123,255,.10), transparent 70%); z-index:0; }
+    .stage .layer{ position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;
+        opacity:0; transition:opacity .45s var(--ease); pointer-events:none; }
+    .stage .layer.base{ opacity:1; z-index:1; }
+    #layer-shoes{ z-index:2; } #layer-bottom{ z-index:3; } #layer-top{ z-index:4; }
+    .stage .layer.on{ opacity:1; }
+    .stage .hint{ position:absolute; z-index:5; left:0; right:0; bottom:18px; text-align:center;
+        font-size:.72rem; color:var(--muted); transition:opacity .3s; }
+    .reset-btn{ width:100%; justify-content:center; margin-top:14px; }
+
+    .worn{ background:var(--bg2); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; }
+    .worn-head{ display:flex; justify-content:space-between; align-items:center; font-size:.64rem; letter-spacing:.2em;
+        text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+    .worn-head .cnt{ background:var(--bg3); border:1px solid var(--line); color:var(--text); border-radius:999px; padding:3px 10px; letter-spacing:.05em; }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; }
+    .chips .empty{ color:var(--muted); font-size:.86rem; }
+    .chip{ display:inline-flex; align-items:center; gap:9px; background:var(--bg3); border:1px solid var(--line); border-radius:999px; padding:6px 10px 6px 6px; }
+    .chip img{ width:30px; height:30px; object-fit:contain; background:var(--bg); border-radius:50%; }
+    .chip .nm{ font-size:.78rem; font-weight:600; }
+    .chip .x{ width:20px; height:20px; border-radius:50%; background:var(--line); display:grid; place-items:center;
+        cursor:pointer; font-size:.8rem; line-height:1; color:var(--text); transition:.2s; }
+    .chip .x:hover{ background:var(--blue); color:#fff; }
+
+    .total-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin:16px 0 22px;
+        padding:18px 22px; background:var(--bg2); border:1px solid var(--line); border-radius:var(--r); }
+    .total-l{ font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+    .total-n{ font-family:'Space Grotesk'; font-weight:700; font-size:1.7rem; margin-top:4px; }
+
+    .tabs{ display:inline-flex; gap:5px; background:var(--bg2); border:1px solid var(--line); border-radius:999px; padding:5px; margin-bottom:18px; }
+    .tab{ border:none; background:transparent; color:var(--muted); font-family:'Manrope'; font-weight:700; font-size:.7rem;
+        letter-spacing:.12em; text-transform:uppercase; padding:10px 22px; border-radius:999px; cursor:pointer; transition:.25s; }
+    .tab:hover{ color:var(--text); }
+    .tab.active{ background:var(--blue); color:#fff; }
+
+    .fit-list{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .fit-card{ display:flex; flex-direction:column; background:var(--bg2); border:1px solid var(--line); border-radius:var(--r);
+        padding:16px; transition:border-color .25s, box-shadow .25s; }
+    .fit-card.worn-now{ border-color:var(--blue); box-shadow:0 0 0 1px var(--blue) inset; }
+    .fit-card .top{ display:flex; gap:14px; align-items:center; }
+    .fit-card .th{ width:66px; height:66px; flex-shrink:0; background:var(--bg); border:1px solid var(--line); border-radius:12px; object-fit:contain; padding:6px; }
+    .fit-card .nm{ font-family:'Space Grotesk'; font-weight:600; font-size:.88rem; }
+    .fit-card .pr{ color:var(--blue); font-weight:700; font-size:.82rem; margin-top:4px; }
+    .fit-card .tbtn{ margin-top:14px; width:100%; justify-content:center; display:inline-flex; align-items:center; gap:8px;
+        font-size:.64rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:11px 16px; border-radius:999px;
+        border:1px solid var(--line2); background:transparent; color:var(--text); cursor:pointer; transition:.25s; }
+    .fit-card .tbtn:hover{ border-color:var(--blue); color:var(--blue); }
+    .fit-card.worn-now .tbtn{ background:var(--blue); border-color:var(--blue); color:#fff; }
+
+    /* ===== Полоса-заявление ===== */
+    .statement{ position:relative; min-height:68vh; display:flex; align-items:center; overflow:hidden; }
+    .statement img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; filter:grayscale(.3); }
+    .statement::after{ content:''; position:absolute; inset:0; z-index:1;
+        background:linear-gradient(90deg, rgba(10,10,13,0.94) 30%, rgba(10,10,13,0.55)); }
+    .statement .wrap{ position:relative; z-index:2; }
+    .statement h2{ font-size:clamp(2.2rem,6.5vw,4.6rem); font-weight:700; letter-spacing:-.035em; line-height:1.03; max-width:14ch; }
+    .statement h2 .bl{ color:var(--blue); }
+    .statement p{ color:var(--muted); margin-top:20px; max-width:420px; font-size:1.02rem; line-height:1.55; }
 
     /* ===== О бренде ===== */
-    .about{ background:var(--black2); }
-    .about .box{ display:grid; grid-template-columns:1.1fr 1fr; gap:50px; align-items:center; }
-    .about h2{ font-size:clamp(2rem,6vw,3rem); font-weight:800; letter-spacing:-1px; line-height:1.05; }
-    .about h2 .bl{ color:var(--blue-light); }
-    .about p{ color:var(--muted); line-height:1.7; margin-top:18px; }
-    .stats{ display:flex; gap:40px; margin-top:28px; }
-    .stats .n{ font-size:2.2rem; font-weight:900; color:#fff; }
-    .stats .l{ color:var(--muted); font-size:.85rem; }
-    .about .visual{ border-radius:20px; min-height:320px; border:1px solid var(--line);
-        background:radial-gradient(70% 70% at 70% 30%, rgba(30,91,255,0.35), transparent 60%), linear-gradient(160deg,#141722,#0a0b0f);
-        display:flex; align-items:center; justify-content:center; font-size:6rem; font-weight:900; letter-spacing:3px; }
-    .about .visual b{ color:var(--blue-light); }
+    .about .box{ display:grid; grid-template-columns:1.02fr 1fr; gap:clamp(34px,6vw,80px); align-items:center; }
+    .about h2{ font-size:clamp(2rem,5.2vw,3.5rem); font-weight:700; letter-spacing:-.03em; line-height:1.03; }
+    .about h2 .bl{ color:var(--blue); }
+    .about p{ color:var(--muted); line-height:1.75; margin-top:22px; max-width:480px; font-size:1.02rem; }
+    .about .stats{ display:flex; gap:clamp(28px,5vw,56px); margin-top:42px; }
+    .about .stats .n{ font-family:'Space Grotesk'; font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700; letter-spacing:-.02em; }
+    .about .stats .l{ font-size:.63rem; color:var(--muted); font-weight:600; margin-top:5px; letter-spacing:.14em; text-transform:uppercase; }
+    .about .pic{ position:relative; aspect-ratio:4/5; overflow:hidden; border-radius:var(--r); border:1px solid var(--line); box-shadow:0 40px 90px -46px rgba(0,0,0,.9); }
+    .about .pic img{ width:100%; height:100%; object-fit:cover; }
 
-    /* ===== Контакты / CTA ===== */
+    /* ===== Контакты ===== */
     .contact{ text-align:center; }
-    .contact h2{ font-size:clamp(2rem,6vw,3.2rem); font-weight:800; }
-    .contact p{ color:var(--muted); margin:16px auto 30px; max-width:480px; }
+    .contact h2{ font-size:clamp(2rem,6vw,3.6rem); font-weight:700; letter-spacing:-.03em; line-height:1.03; }
+    .contact p{ color:var(--muted); margin:18px auto 34px; max-width:460px; line-height:1.6; font-size:1.02rem; }
 
     /* ===== Футер ===== */
-    footer{ border-top:1px solid var(--line); padding:36px 0; color:var(--muted); font-size:.88rem; }
-    .foot{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-    footer a:hover{ color:#fff; }
+    footer{ border-top:1px solid var(--line); padding-top:clamp(48px,7vw,72px); }
+    .foot-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:34px; padding-bottom:clamp(40px,6vw,64px); }
+    .foot-grid .brand{ font-family:'Space Grotesk'; font-weight:700; font-size:1.3rem; letter-spacing:.04em; }
+    .foot-grid .brand .r{ color:var(--blue); font-size:.5em; vertical-align:super; }
+    .foot-grid p{ color:var(--muted); font-size:.86rem; line-height:1.6; margin-top:14px; max-width:260px; }
+    .foot-grid .ttl{ font-size:.64rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+    .foot-grid a{ display:block; font-size:.88rem; color:var(--text); opacity:.82; margin-bottom:11px; transition:color .25s, opacity .25s; }
+    .foot-grid a:hover{ color:var(--blue); opacity:1; }
+    .bigmark{ font-family:'Space Grotesk'; font-weight:700; font-size:clamp(4rem,22vw,18rem); letter-spacing:-.04em;
+        line-height:.74; padding:26px 0 12px; border-top:1px solid var(--line); color:#fff; }
+    .bigmark .r{ color:var(--blue); font-size:.28em; vertical-align:super; }
+    .copyr{ font-size:.64rem; color:var(--muted); padding:16px 0 40px; letter-spacing:.14em; text-transform:uppercase; }
+
+    /* ===== Тост ===== */
+    .toast{ position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg);
+        padding:14px 26px; border-radius:999px; font-size:.78rem; font-weight:700; letter-spacing:.04em;
+        opacity:0; pointer-events:none; transition:opacity .4s var(--ease), transform .4s var(--ease); z-index:500; }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
     /* ===== Адаптив ===== */
-    @media(max-width:900px){
-        .grid4{ grid-template-columns:repeat(2,1fr); }
-        .grid3{ grid-template-columns:1fr; }
-        .about .box{ grid-template-columns:1fr; }
-        .nav .links{ display:none; }
-        .burger{ display:block; }
-    }
-    @media(max-width:560px){
-        .grid4{ grid-template-columns:1fr; }
-        .btn-ghost{ margin-left:0; margin-top:12px; }
+
+    /* Большие ноутбуки: 4 -> 3 колонки товаров */
+    @media(max-width:1180px){
+        .grid{ grid-template-columns:repeat(3,1fr); }
     }
 
-    /* ===== ЗАСТАВКА (сборка ADMV в 3D) ===== */
+    /* Планшеты: все 2-колоночные блоки складываются вертикально */
+    @media(max-width:1024px){
+        .hero .box{ grid-template-columns:1fr; gap:38px; }
+        .hero .shot{ max-width:440px; order:-1; margin:0; }
+        .fit-grid{ grid-template-columns:1fr; }
+        .stage-wrap{ position:static; max-width:400px; margin:0 auto; }
+        .about .box{ grid-template-columns:1fr; }
+        .about .pic{ max-width:420px; }
+    }
+
+    /* Крупные телефоны / маленькие планшеты: бургер, 2 колонки */
+    @media(max-width:768px){
+        .burger{ display:flex; }
+        .hdr .left{ display:none; }
+        .hdr{ grid-template-columns:auto 1fr auto; }
+        .perks .row{ grid-template-columns:1fr; }
+        .grid{ grid-template-columns:repeat(2,1fr); }
+        .fit-list{ grid-template-columns:repeat(2,1fr); }
+        .foot-grid{ grid-template-columns:1fr 1fr; }
+        .statement{ min-height:58vh; }
+        .statement::after{ background:linear-gradient(0deg, rgba(10,10,13,0.96) 25%, rgba(10,10,13,0.45)); }
+    }
+
+    /* Смартфоны: строго 1 колонка, удобные тач-кнопки */
+    @media(max-width:560px){
+        .grid{ grid-template-columns:1fr; gap:16px; }
+        .fit-list{ grid-template-columns:1fr; }
+        .foot-grid{ grid-template-columns:1fr; gap:26px; }
+        section{ padding:clamp(52px,12vw,120px) 0; }
+        .hero .cta{ flex-direction:column; align-items:stretch; }
+        .hero .cta .btn{ justify-content:center; }
+        .btn{ padding:17px 28px; }
+        .total-row{ flex-direction:column; align-items:stretch; gap:14px; }
+        .total-row .btn{ justify-content:center; }
+        .tabs{ display:flex; width:100%; }
+        .tab{ flex:1; padding:14px 8px; text-align:center; }
+        .chip{ padding:7px 12px 7px 7px; }
+        .chip .x{ width:26px; height:26px; font-size:.95rem; }
+        .fit-card .th{ width:72px; height:72px; }
+        .worn, .total-row{ padding:16px 18px; }
+    }
+
+    /* Очень узкие экраны (iPhone SE и меньше) */
+    @media(max-width:360px){
+        .wrap{ padding:0 16px; }
+        .hdr .cart a{ padding:9px 13px; }
+    }
+
+    /* ===== Заставка (сборка ADMV) ===== */
     #intro{
         position:fixed; inset:0; z-index:9999; overflow:hidden;
-        background:radial-gradient(circle at 50% 42%, #0e1326, #000 70%);
+        background:radial-gradient(60% 60% at 50% 44%, #141420, #060608 92%);
         display:flex; flex-direction:column; align-items:center; justify-content:center;
-        perspective:1100px; transition:opacity 1s ease, transform 1s ease, filter 1s ease;
+        perspective:1200px; transition:opacity .9s ease, transform .9s ease, filter .9s ease;
     }
-    #intro.hide{ opacity:0; transform:scale(1.15); filter:blur(14px); pointer-events:none; }
-    #intro .glow{ position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; }
-    #intro .glow.a{ width:480px; height:480px; background:rgba(30,91,255,0.55); top:14%; left:16%; animation:fa 9s ease-in-out infinite; }
-    #intro .glow.b{ width:540px; height:540px; background:rgba(10,42,138,0.6); bottom:8%; right:12%; animation:fb 11s ease-in-out infinite; }
-    @keyframes fa{ 50%{ transform:translate(60px,40px) scale(1.15);} }
-    @keyframes fb{ 50%{ transform:translate(-50px,-30px) scale(1.1);} }
-    .admv{ display:flex; gap:clamp(6px,2vw,22px); transform-style:preserve-3d; }
+    #intro.hide{ opacity:0; transform:scale(1.07); filter:blur(8px); pointer-events:none; }
+    #intro .glow{ position:absolute; border-radius:50%; filter:blur(110px); pointer-events:none; }
+    #intro .glow.a{ width:460px; height:460px; background:rgba(61,123,255,0.28); top:14%; left:16%; animation:ga 9s ease-in-out infinite; }
+    #intro .glow.b{ width:520px; height:520px; background:rgba(61,123,255,0.14); bottom:10%; right:14%; animation:gb 11s ease-in-out infinite; }
+    @keyframes ga{ 50%{ transform:translate(50px,30px) scale(1.15);} }
+    @keyframes gb{ 50%{ transform:translate(-40px,-25px) scale(1.1);} }
+    .admv{ display:flex; gap:clamp(2px,1vw,14px); transform-style:preserve-3d; }
     .admv .ch{
-        font-size:clamp(3.5rem,20vw,11rem); font-weight:900; letter-spacing:-2px; line-height:1;
-        color:#fff; opacity:0;
+        font-family:'Space Grotesk'; font-size:clamp(3.6rem,20vw,12rem); font-weight:700; letter-spacing:-.04em; line-height:1;
+        color:var(--text); opacity:0;
         transform:translate3d(var(--x),var(--y),var(--z)) rotateX(var(--rx)) rotateY(var(--ry)) scale(.4);
-        filter:blur(14px);
-        transition:transform 1.2s cubic-bezier(.19,1,.22,1), opacity .9s ease, filter 1s ease;
-        text-shadow:0 0 40px rgba(30,91,255,0.5);
+        filter:blur(12px);
+        transition:transform 1.15s var(--ease), opacity .8s ease, filter .9s ease;
     }
-    .admv .ch.blue{ color:transparent; -webkit-text-stroke:3px var(--blue-light); text-shadow:0 0 50px rgba(30,91,255,0.8); }
+    .admv .ch.blue{ color:var(--blue); }
     .admv.go .ch{ opacity:1; transform:none; filter:blur(0); }
-    .intro-line{ width:0; height:3px; margin-top:30px; background:linear-gradient(90deg,transparent,var(--blue),transparent); transition:width 1s ease .2s; }
-    #intro.ready .intro-line{ width:min(60%,360px); }
-    .intro-tag{ margin-top:18px; letter-spacing:8px; font-size:clamp(.7rem,2.5vw,1rem); color:var(--muted); text-transform:uppercase;
-        opacity:0; transform:translateY(14px); transition:opacity .9s ease .3s, transform .9s ease .3s; }
+    .intro-line{ width:0; height:3px; margin-top:30px; background:var(--blue); transition:width .9s ease .2s; }
+    #intro.ready .intro-line{ width:min(56%,320px); }
+    .intro-tag{ margin-top:18px; font-size:clamp(.62rem,2.2vw,.82rem); color:var(--muted);
+        text-transform:uppercase; letter-spacing:.55em; opacity:0; transform:translateY(12px);
+        transition:opacity .8s ease .3s, transform .8s ease .3s; }
     #intro.ready .intro-tag{ opacity:1; transform:none; }
+
+    @media(prefers-reduced-motion:reduce){
+        .reveal{ opacity:1 !important; transform:none !important; }
+        #intro .glow{ animation:none !important; }
+        .admv .ch{ transition:opacity .4s ease !important; transform:none !important; filter:none !important; }
+    }
 </style>
 </head>
 <body>
 
-<!-- ===== ЗАСТАВКА ===== -->
+<!-- ===== Заставка ===== -->
 <div id="intro">
     <div class="glow a"></div>
     <div class="glow b"></div>
@@ -183,125 +339,365 @@
 
 <!-- ===== Шапка ===== -->
 <header>
-    <div class="wrap nav">
-        <div class="logo">AD<b>MV</b></div>
-        <nav class="links">
-            <a href="#home">Главная</a>
+    <div class="wrap hdr">
+        <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+        <nav class="left up">
             <a href="#catalog">Каталог</a>
-            <a href="#about">О бренде</a>
+            <a href="#fitting">Примерка</a>
+            <a href="#about">Бренд</a>
             <a href="#contact">Контакты</a>
         </nav>
-        <a href="#contact" class="cta">Связаться</a>
-        <div class="burger" onclick="document.querySelector('.links').style.display='flex'">☰</div>
+        <div class="logo">ADMV<span class="r">®</span></div>
+        <div class="cart"><a href="#"><span class="dot"></span><span id="cartLabel">Корзина (0)</span></a></div>
     </div>
 </header>
 
+<!-- ===== Мобильное меню ===== -->
+<nav class="mobnav" id="mobnav">
+    <a href="#catalog">Каталог</a>
+    <a href="#fitting">Примерка</a>
+    <a href="#about">Бренд</a>
+    <a href="#contact">Контакты</a>
+</nav>
+
 <!-- ===== Герой ===== -->
-<section class="hero" id="home" style="padding-top:0">
-    <div class="wrap hero-inner">
-        <span class="eyebrow">Новая коллекция · 2026</span>
-        <h1>ADMV<br><span class="ac">STYLE</span></h1>
-        <p class="lead">Мужская одежда с характером. Чёткие линии, качество и уверенность в каждой детали.</p>
+<section class="hero" id="home">
+    <div class="wrap box">
         <div>
-            <a href="#catalog" class="btn btn-blue">Смотреть каталог</a>
-            <a href="#contact" class="btn btn-ghost">Связаться с нами</a>
+            <div class="eyebrow">Новый дроп · 2026</div>
+            <h1>Носи то, что<br>говорит <span class="bl">за тебя.</span></h1>
+            <p>Мужская одежда с характером. Ограниченные дропы, чёткие силуэты, качество в каждой детали.</p>
+            <div class="cta">
+                <a href="#catalog" class="btn btn-blue">Смотреть каталог <span class="arr">→</span></a>
+                <a href="#fitting" class="btn btn-ghost">Примерить образ</a>
+            </div>
+        </div>
+        <div class="shot">
+            <img src="https://loremflickr.com/800/1000/mens,fashion,streetwear,portrait?lock=21" alt="ADMV look">
+            <div class="badge">
+                <div class="t">Образ сезона</div>
+                <div class="n">ADMV — Astro</div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- ===== Категории ===== -->
-<section id="catalog">
+<!-- ===== Преимущества ===== -->
+<section class="perks">
     <div class="wrap">
-        <div class="sec-head">
-            <div class="tag">Категории</div>
-            <h2>Выбери своё</h2>
-        </div>
-        <div class="grid4">
-            <div class="cat"><div class="ico">👕</div><div><div class="nm">Футболки и поло</div></div><div class="go">Смотреть →</div></div>
-            <div class="cat"><div class="ico">🧥</div><div><div class="nm">Верхняя одежда</div></div><div class="go">Смотреть →</div></div>
-            <div class="cat"><div class="ico">👖</div><div><div class="nm">Брюки и джинсы</div></div><div class="go">Смотреть →</div></div>
-            <div class="cat"><div class="ico">🧢</div><div><div class="nm">Аксессуары</div></div><div class="go">Смотреть →</div></div>
+        <div class="row">
+            <div class="perk reveal">
+                <svg viewBox="0 0 24 24"><rect x="1" y="6" width="13" height="10" rx="1"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></svg>
+                <div><div class="t">Доставка по РФ</div><div class="s">1-3 дня в крупные города</div></div>
+            </div>
+            <div class="perk reveal">
+                <svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+                <div><div class="t">Оплата при получении</div><div class="s">Проверяй перед оплатой</div></div>
+            </div>
+            <div class="perk reveal">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                <div><div class="t">Обмен 14 дней</div><div class="s">Если не подошёл размер</div></div>
+            </div>
         </div>
     </div>
 </section>
 
 <!-- ===== Новинки ===== -->
-<section style="padding-top:0">
+<section id="catalog">
     <div class="wrap">
-        <div class="sec-head">
-            <div class="tag">Новинки</div>
-            <h2>Свежая коллекция</h2>
+        <div class="sec-top reveal">
+            <h2>Новая коллекция</h2>
+            <a href="#" class="all up">Весь каталог →</a>
         </div>
-        <div class="grid3">
-            <div class="prod"><div class="ph">👔</div><div class="body"><div class="t">Рубашка Classic</div><div class="d">Хлопок · приталенный крой</div><div class="pr"><span>4 500 ₽</span></div></div></div>
-            <div class="prod"><div class="ph">🧥</div><div class="body"><div class="t">Бомбер ADMV</div><div class="d">Ветрозащита · унисекс</div><div class="pr"><span>8 900 ₽</span></div></div></div>
-            <div class="prod"><div class="ph">👟</div><div class="body"><div class="t">Кроссовки Urban</div><div class="d">Лёгкие · на каждый день</div><div class="pr"><span>7 200 ₽</span></div></div></div>
+        <div class="grid" id="grid"></div>
+    </div>
+</section>
+
+<!-- ===== Примерочная ===== -->
+<section id="fitting">
+    <div class="wrap">
+        <div class="sec-top reveal" style="display:block">
+            <h2>Примерочная</h2>
+            <div class="lead">Собери образ прямо на манекене. Нажимай «Примерить», меняй верх, низ и обувь, смотри итоговую цену в реальном времени.</div>
         </div>
+        <div class="fit-grid">
+            <!-- Визуализатор -->
+            <div class="stage-wrap reveal">
+                <div class="stage" id="stage">
+                    <div class="spot"></div>
+                    <img class="layer base" src="images/mannequin-base.png" alt="Манекен">
+                    <img class="layer" id="layer-shoes" alt="">
+                    <img class="layer" id="layer-bottom" alt="">
+                    <img class="layer" id="layer-top" alt="">
+                    <div class="hint" id="stageHint">Выбери вещи справа, чтобы примерить</div>
+                </div>
+                <button class="btn btn-ghost reset-btn" id="resetBtn">Сбросить весь образ</button>
+            </div>
+
+            <!-- Управление -->
+            <div class="fit-panel reveal">
+                <div class="worn">
+                    <div class="worn-head"><span>Надето сейчас</span><span class="cnt" id="wornCount">0</span></div>
+                    <div class="chips" id="chips"></div>
+                </div>
+
+                <div class="total-row">
+                    <div>
+                        <div class="total-l">Итого за образ</div>
+                        <div class="total-n" id="total">0 ₽</div>
+                    </div>
+                    <button class="btn btn-blue" id="addLook">В корзину <span class="arr">→</span></button>
+                </div>
+
+                <div class="tabs" id="tabs">
+                    <button class="tab active" data-cat="top">Верх</button>
+                    <button class="tab" data-cat="bottom">Низ</button>
+                    <button class="tab" data-cat="shoes">Обувь</button>
+                </div>
+                <div class="fit-list" id="fitList"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Заявление ===== -->
+<section class="statement">
+    <img src="https://loremflickr.com/1600/1000/mens,fashion,dark,jacket?lock=77" alt="">
+    <div class="wrap reveal">
+        <h2>Не у всех будет <span class="bl">ADMV.</span></h2>
+        <p>Дропы ограниченным тиражом. Успел - значит твоё.</p>
     </div>
 </section>
 
 <!-- ===== О бренде ===== -->
 <section class="about" id="about">
     <div class="wrap box">
-        <div>
-            <div class="tag" style="color:var(--blue-light);font-weight:700;letter-spacing:3px;font-size:.78rem;text-transform:uppercase">О бренде</div>
-            <h2>Это <span class="bl">ADMV</span>.<br>Больше чем одежда.</h2>
-            <p>ADMV — это мужской стиль без компромиссов. Мы собираем вещи, которые носятся каждый день и подчёркивают характер. Простые силуэты, качественные ткани и внимание к деталям.</p>
+        <div class="reveal">
+            <h2>Это <span class="bl">ADMV</span>.<br>Больше, чем одежда.</h2>
+            <p>Мы собираем вещи, которые носятся каждый день и подчёркивают характер. Простые силуэты, качественные ткани, внимание к деталям. Без лишнего шума.</p>
             <div class="stats">
                 <div><div class="n">100+</div><div class="l">моделей</div></div>
                 <div><div class="n">24/7</div><div class="l">поддержка</div></div>
                 <div><div class="n">РФ</div><div class="l">доставка</div></div>
             </div>
         </div>
-        <div class="visual">AD<b>MV</b></div>
+        <div class="pic reveal"><img src="https://loremflickr.com/800/1000/mens,style,fashion,model?lock=34" alt="ADMV бренд"></div>
     </div>
 </section>
 
 <!-- ===== Контакты ===== -->
 <section class="contact" id="contact">
-    <div class="wrap">
-        <div class="tag" style="color:var(--blue-light);font-weight:700;letter-spacing:3px;font-size:.78rem;text-transform:uppercase">Контакты</div>
+    <div class="wrap reveal">
         <h2>Готов обновить гардероб?</h2>
-        <p>Напиши нам — подберём размер, расскажем о наличии и доставке.</p>
-        <a href="#" class="btn btn-blue">Написать в Telegram</a>
+        <p>Напиши нам - подберём размер, расскажем о наличии и доставке.</p>
+        <a href="#" class="btn btn-blue">Написать в Telegram <span class="arr">→</span></a>
     </div>
 </section>
 
 <!-- ===== Футер ===== -->
 <footer>
-    <div class="wrap foot">
-        <div class="logo">AD<b>MV</b></div>
-        <div>© 2026 ADMV · Мужская одежда</div>
-        <div><a href="#home">Наверх ↑</a></div>
+    <div class="wrap">
+        <div class="foot-grid">
+            <div>
+                <div class="brand">ADMV<span class="r">®</span></div>
+                <p>Мужская одежда с характером. Ограниченные дропы и чистые силуэты.</p>
+            </div>
+            <div>
+                <div class="ttl">Магазин</div>
+                <a href="#catalog">Каталог</a>
+                <a href="#fitting">Примерочная</a>
+                <a href="#about">О бренде</a>
+            </div>
+            <div>
+                <div class="ttl">Связь</div>
+                <a href="#">Telegram</a>
+                <a href="#">Instagram</a>
+                <a href="#contact">Написать нам</a>
+            </div>
+        </div>
+        <div class="bigmark">ADMV<span class="r">®</span></div>
+        <div class="copyr">© 2026 ADMV · Мужская одежда</div>
     </div>
 </footer>
 
+<div class="toast" id="toast"></div>
+
 <script>
-    // ===== Заставка: сборка ADMV =====
-    (function(){
-        var intro = document.getElementById('intro');
-        var box = document.getElementById('admv');
-        var letters = "ADMV".split("");
-        var html = '';
-        letters.forEach(function(c, i){
-            var x  = ((Math.random()*2-1)*600).toFixed(0);
-            var y  = ((Math.random()*2-1)*400).toFixed(0);
-            var z  = (-(Math.random()*500+300)).toFixed(0);
-            var rx = ((Math.random()*2-1)*120).toFixed(0);
-            var ry = ((Math.random()*2-1)*120).toFixed(0);
-            var cls = (i===3) ? 'ch blue' : 'ch';   // последняя буква V — синий контур
-            html += '<span class="'+cls+'" style="--x:'+x+'px;--y:'+y+'px;--z:'+z+'px;--rx:'+rx+'deg;--ry:'+ry+'deg;transition-delay:'+(i*0.12).toFixed(2)+'s">'+c+'</span>';
+    /* ============================================================
+       ДАННЫЕ. Чтобы подставить свои картинки — просто замени пути
+       layer (слой на манекене, прозрачный PNG, единый холст)
+       и thumb (квадратная мини-иконка). cat: 'top' | 'bottom' | 'shoes'.
+       ============================================================ */
+    const FIT = [
+        { id:'astro', name:'Куртка Astro',    cat:'top',    price:8900, layer:'images/top-astro.png',   thumb:'images/thumb-astro.png' },
+        { id:'core',  name:'Худи Core',       cat:'top',    price:4500, layer:'images/top-core.png',    thumb:'images/thumb-core.png'  },
+        { id:'night', name:'Бомбер Night',    cat:'top',    price:7400, layer:'images/top-night.png',   thumb:'images/thumb-night.png' },
+        { id:'raw',   name:'Джинсы Raw',      cat:'bottom', price:6200, layer:'images/bottom-raw.png',  thumb:'images/thumb-raw.png'   },
+        { id:'cargo', name:'Брюки Cargo',     cat:'bottom', price:5600, layer:'images/bottom-cargo.png',thumb:'images/thumb-cargo.png' },
+        { id:'urban', name:'Кроссовки Urban', cat:'shoes',  price:7200, layer:'images/shoes-urban.png', thumb:'images/thumb-urban.png' },
+    ];
+
+    // Что сейчас надето: по одному предмету на слой
+    const worn = { top:null, bottom:null, shoes:null };
+    let activeCat = 'top';
+    let cartCount = 0;
+
+    const byId   = id => FIT.find(x => x.id === id);
+    const fmt    = n  => n.toLocaleString('ru-RU') + ' ₽';
+    const $      = s  => document.querySelector(s);
+
+    const layers = { top:$('#layer-top'), bottom:$('#layer-bottom'), shoes:$('#layer-shoes') };
+
+    // Витрина «Новинки» (фото-каталог, отдельно от примерки)
+    const showcase = [
+        { name:'Куртка Astro',    cat:'Кожа · оверсайз',  price:'8 900 ₽', q:'mens,leather,jacket',   lock:11, tag:'NEW' },
+        { name:'Худи Core',       cat:'Хлопок · унисекс', price:'4 500 ₽', q:'mens,hoodie,streetwear', lock:12, tag:'' },
+        { name:'Джинсы Raw',      cat:'Деним · прямые',   price:'6 200 ₽', q:'mens,jeans,denim',       lock:13, tag:'' },
+        { name:'Футболка ADMV',   cat:'Хлопок 100%',      price:'2 900 ₽', q:'mens,tshirt,fashion',    lock:14, tag:'NEW' },
+        { name:'Бомбер Night',    cat:'Ветрозащита',      price:'7 400 ₽', q:'mens,bomber,jacket',     lock:15, tag:'' },
+        { name:'Брюки Cargo',     cat:'Карго · широкие',  price:'5 600 ₽', q:'mens,cargo,pants',       lock:16, tag:'' },
+        { name:'Кроссовки Urban', cat:'На каждый день',   price:'7 200 ₽', q:'sneakers,shoes,street',  lock:17, tag:'NEW' },
+        { name:'Кепка ADMV',      cat:'Аксессуар',        price:'1 900 ₽', q:'mens,cap,streetwear',    lock:18, tag:'' },
+    ];
+    $('#grid').innerHTML = showcase.map(p => `
+        <div class="card reveal">
+            <div class="shot">
+                ${p.tag ? `<span class="tag">${p.tag}</span>` : ''}
+                <img src="https://loremflickr.com/600/800/${p.q}?lock=${p.lock}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="meta">
+                <div><div class="nm">${p.name}</div><div class="mut">${p.cat}</div></div>
+                <div class="pr">${p.price}</div>
+            </div>
+        </div>`).join('');
+
+    /* ===== Логика примерки ===== */
+    function toggle(id){
+        const it = byId(id);
+        worn[it.cat] = (worn[it.cat] === id) ? null : id;  // снять эту же вещь / надеть
+        render();
+    }
+
+    function render(){
+        // 1. Слои на манекене
+        ['top','bottom','shoes'].forEach(cat => {
+            const el = layers[cat], id = worn[cat];
+            if(id){ const it = byId(id); if(el.getAttribute('src') !== it.layer) el.src = it.layer; el.classList.add('on'); }
+            else { el.classList.remove('on'); }
         });
-        box.innerHTML = html;
+
+        // 2. Виджет «Надето сейчас»
+        const on = ['top','bottom','shoes'].map(c => worn[c]).filter(Boolean).map(byId);
+        $('#wornCount').textContent = on.length;
+        $('#chips').innerHTML = on.length
+            ? on.map(it => `<span class="chip"><img src="${it.thumb}" alt=""><span class="nm">${it.name}</span><span class="x" data-x="${it.id}">×</span></span>`).join('')
+            : `<span class="empty">Пока ничего не надето. Выбери вещи ниже.</span>`;
+
+        // 3. Итоговая стоимость
+        $('#total').textContent = fmt(on.reduce((s, it) => s + it.price, 0));
+
+        // 4. Подсказка на сцене
+        $('#stageHint').style.opacity = on.length ? '0' : '1';
+
+        // 5. Кнопки в списке (Примерить <-> Снять)
+        renderList();
+    }
+
+    function renderList(){
+        const items = FIT.filter(x => x.cat === activeCat);
+        $('#fitList').innerHTML = items.map(it => {
+            const active = worn[it.cat] === it.id;
+            return `
+            <div class="fit-card${active ? ' worn-now' : ''}">
+                <div class="top">
+                    <img class="th" src="${it.thumb}" alt="${it.name}">
+                    <div><div class="nm">${it.name}</div><div class="pr">${fmt(it.price)}</div></div>
+                </div>
+                <button class="tbtn" data-try="${it.id}">${active ? 'Снять' : 'Примерить'}</button>
+            </div>`;
+        }).join('');
+    }
+
+    // Делегирование кликов
+    document.addEventListener('click', e => {
+        const t = e.target.closest('[data-try]'); if(t){ toggle(t.dataset.try); return; }
+        const x = e.target.closest('[data-x]');   if(x){ toggle(x.dataset.x);  return; }
+        const tab = e.target.closest('.tab');      if(tab){
+            activeCat = tab.dataset.cat;
+            document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b === tab));
+            renderList(); return;
+        }
+    });
+
+    $('#resetBtn').addEventListener('click', () => { worn.top = worn.bottom = worn.shoes = null; render(); toast('Образ сброшен'); });
+
+    $('#addLook').addEventListener('click', () => {
+        const on = ['top','bottom','shoes'].map(c => worn[c]).filter(Boolean);
+        if(!on.length){ toast('Сначала выбери хотя бы одну вещь'); return; }
+        cartCount += on.length;
+        $('#cartLabel').textContent = 'Корзина (' + cartCount + ')';
+        toast('Образ добавлен в корзину · ' + on.length + ' вещ.');
+    });
+
+    let toastT;
+    function toast(msg){
+        const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+        clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+
+    render();
+
+    /* ===== Появление секций при скролле ===== */
+    (function(){
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+
+    /* ===== Мобильное бургер-меню ===== */
+    (function(){
+        const burger = document.getElementById('burger');
+        const mobnav = document.getElementById('mobnav');
+        function set(open){
+            mobnav.classList.toggle('open', open);
+            burger.classList.toggle('open', open);
+            burger.setAttribute('aria-expanded', open);
+            document.body.style.overflow = open ? 'hidden' : '';
+        }
+        burger.addEventListener('click', () => set(!mobnav.classList.contains('open')));
+        mobnav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
+        // Закрыть меню, если ушли на десктопную ширину
+        window.addEventListener('resize', () => { if(window.innerWidth > 768) set(false); });
+    })();
+
+    /* ===== Заставка: сборка ADMV (один раз за визит) ===== */
+    (function(){
+        const intro = document.getElementById('intro');
+        if(sessionStorage.getItem('admvIntro')){ intro.parentNode.removeChild(intro); return; }
+        sessionStorage.setItem('admvIntro', '1');
+
+        const box = document.getElementById('admv');
+        const letters = "ADMV".split("");
+        box.innerHTML = letters.map((c, i) => {
+            const x  = ((Math.random()*2-1)*560).toFixed(0);
+            const y  = ((Math.random()*2-1)*380).toFixed(0);
+            const z  = (-(Math.random()*480+280)).toFixed(0);
+            const rx = ((Math.random()*2-1)*110).toFixed(0);
+            const ry = ((Math.random()*2-1)*110).toFixed(0);
+            const cls = (i===3) ? 'ch blue' : 'ch';
+            return '<span class="'+cls+'" style="--x:'+x+'px;--y:'+y+'px;--z:'+z+'px;--rx:'+rx+'deg;--ry:'+ry+'deg;transition-delay:'+(i*0.11).toFixed(2)+'s">'+c+'</span>';
+        }).join('');
+
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){ box.classList.add('go'); }); });
-        var assemble = (letters.length*0.12 + 1.2) * 1000;
-        setTimeout(function(){ intro.classList.add('ready'); }, assemble);
-        setTimeout(function(){
+        requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('go')));
+        const assemble = (letters.length*0.11 + 1.15) * 1000;
+        setTimeout(() => intro.classList.add('ready'), assemble);
+        setTimeout(() => {
             intro.classList.add('hide');
             document.body.style.overflow = '';
-            setTimeout(function(){ if(intro.parentNode) intro.parentNode.removeChild(intro); }, 1050);
-        }, assemble + 1700);
+            setTimeout(() => { if(intro.parentNode) intro.parentNode.removeChild(intro); }, 950);
+        }, assemble + 1500);
     })();
 </script>
 
